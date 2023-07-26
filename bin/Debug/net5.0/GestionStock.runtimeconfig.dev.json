@@ -1,0 +1,9 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\ALPHA JEDIDIA\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\ALPHA JEDIDIA\\.nuget\\packages",
+      "C:\\Microsoft\\Xamarin\\NuGet"
+    ]
+  }
+}
