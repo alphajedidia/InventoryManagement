@@ -24,14 +24,16 @@ namespace GestionStock.Controllers
         public async Task<ActionResult<IEnumerable<StatisticsResult>>> GetStatistics()
         {
             var sqlQuery = @"
-                SELECT MONTH(e.DateEntree) AS [Month], YEAR(e.DateEntree) AS [Year],
-       COUNT(e.NumBonEntre) AS NbrEntree,
-       SUM(CASE WHEN MONTH(s.DateSortie) = MONTH(e.DateEntree) AND YEAR(s.DateSortie) = YEAR(e.DateEntree) THEN 1 ELSE 0 END) AS NbrSortie
-FROM Entrees e
-LEFT JOIN Sorties s ON MONTH(s.DateSortie) = MONTH(e.DateEntree) AND YEAR(s.DateSortie) = YEAR(e.DateEntree)
-GROUP BY MONTH(e.DateEntree), YEAR(e.DateEntree)
-ORDER BY [Year] DESC, [Month] DESC
-OFFSET 0 ROWS FETCH NEXT 25 ROWS ONLY;";
+                            SELECT strftime('%m', e.DateEntree) AS [Month], strftime('%Y', e.DateEntree) AS [Year],
+                                COUNT(e.NumBonEntre) AS NbrEntree,
+                                SUM(CASE WHEN strftime('%m', s.DateSortie) = strftime('%m', e.DateEntree)
+                                                AND strftime('%Y', s.DateSortie) = strftime('%Y', e.DateEntree) THEN 1 ELSE 0 END) AS NbrSortie
+                            FROM Entrees e
+                            LEFT JOIN Sorties s ON strftime('%m', s.DateSortie) = strftime('%m', e.DateEntree)
+                                                AND strftime('%Y', s.DateSortie) = strftime('%Y', e.DateEntree)
+                            GROUP BY [Year], [Month]
+                            ORDER BY [Year] DESC, [Month] DESC
+                            LIMIT 25 OFFSET 0;";
 
             var statistics = await _context.StatisticsResults.FromSqlRaw(sqlQuery).ToListAsync();
 

@@ -166,15 +166,16 @@ namespace GestionStock.Controllers
         public IActionResult GetActivities()
         {
             string sqlQuery = @"
-        SELECT TOP 5 numBon, dateActivite, typeActivite, nomClientFournisseur
-        FROM (
-            SELECT numBonEntre AS numBon, dateEntree AS dateActivite, 'Entrée' AS typeActivite, nomFournisseur AS nomClientFournisseur
-            FROM Entrees
-            UNION ALL
-            SELECT numBonSortie AS numBon, dateSortie AS dateActivite, 'Sortie' AS typeActivite, nomClient AS nomClientFournisseur
-            FROM Sorties
-        ) AS activites_combinees
-        ORDER BY dateActivite DESC;";
+        SELECT numBon, dateActivite, typeActivite, nomClientFournisseur
+            FROM (
+                SELECT numBonEntre AS numBon, dateEntree AS dateActivite, 'Entrée' AS typeActivite, nomFournisseur AS nomClientFournisseur
+                FROM Entrees
+                UNION ALL
+                SELECT numBonSortie AS numBon, dateSortie AS dateActivite, 'Sortie' AS typeActivite, nomClient AS nomClientFournisseur
+                FROM Sorties
+            ) AS activites_combinees
+            ORDER BY dateActivite DESC
+            LIMIT 5;";
 
             var activities = _context.Activities.FromSqlRaw(sqlQuery).ToList();
 

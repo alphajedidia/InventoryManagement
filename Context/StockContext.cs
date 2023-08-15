@@ -40,5 +40,9 @@ public class StockContext : DbContext
             .WithMany(s => s.Destockers)
             .HasForeignKey(d => d.NumBonSortie);
     }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlite("Data Source=inventory.db"); // Update the connection string as needed
+    }
 }
 

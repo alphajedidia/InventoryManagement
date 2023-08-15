@@ -22,21 +22,20 @@ public class MonthlyRankController : ControllerBase
     {
         // Execute the SQL query using FromSqlRaw method
         var sqlQuery = @"
-            WITH MonthlyRank AS (
-                SELECT p.IdProduit, p.Designation, p.Descriptions, p.Img, p.QuantiteStock, 
-                       COUNT(ds.IdProduit) AS TotalSorties, 
-                       MONTH(s.DateSortie) AS [Month],
-                       ROW_NUMBER() OVER (PARTITION BY MONTH(s.DateSortie) ORDER BY COUNT(ds.IdProduit) DESC) AS Rank
-                FROM Produits p 
-                LEFT JOIN Destockers ds ON p.IdProduit = ds.IdProduit 
-                LEFT JOIN Sorties s ON ds.NumBonSortie = s.NumBonSortie
-                GROUP BY p.IdProduit, p.Designation, p.Descriptions, p.Img, p.QuantiteStock, MONTH(s.DateSortie)
-            )
-            SELECT IdProduit, Designation, Descriptions, Img, QuantiteStock, TotalSorties, [Month]
-            FROM MonthlyRank
-            WHERE Rank <= 3 AND TotalSorties > 0
-            ORDER BY [Month], TotalSorties DESC;
-        ";
+           WITH MonthlyRank AS (
+                    SELECT p.IdProduit, p.Designation, p.Descriptions, p.Img, p.QuantiteStock, 
+                        COUNT(ds.IdProduit) AS TotalSorties, 
+                        strftime('%Y-%m', s.DateSortie) AS [Month],
+                        ROW_NUMBER() OVER (PARTITION BY strftime('%Y-%m', s.DateSortie) ORDER BY COUNT(ds.IdProduit) DESC) AS Rank
+                    FROM Produits p 
+                    LEFT JOIN Destockers ds ON p.IdProduit = ds.IdProduit 
+                    LEFT JOIN Sorties s ON ds.NumBonSortie = s.NumBonSortie
+                    GROUP BY p.IdProduit, p.Designation, p.Descriptions, p.Img, p.QuantiteStock, [Month]
+                )
+                SELECT IdProduit, Designation, Descriptions, Img, QuantiteStock, TotalSorties, [Month]
+                FROM MonthlyRank
+                WHERE Rank <= 3 AND TotalSorties > 0
+                ORDER BY [Month], TotalSorties DESC;";
 
         // Execute the SQL query and get the results
         var monthlyRankResults = await _context.MonthlyRankResults.FromSqlRaw(sqlQuery).ToListAsync();

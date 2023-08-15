@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GestionStock.Migrations
@@ -14,26 +13,40 @@ namespace GestionStock.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.11");
+
+            modelBuilder.Entity("GestionStock.Models.Activity", b =>
+                {
+                    b.Property<DateTime>("DateActivite")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NomClientFournisseur")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NumBon")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TypeActivite")
+                        .HasColumnType("TEXT");
+
+                    b.ToTable("Activities");
+                });
 
             modelBuilder.Entity("GestionStock.Models.Destocker", b =>
                 {
                     b.Property<int>("IdDestock")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("IdProduit")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("NumBonSortie")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("QuantiteSortie")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("IdDestock");
 
@@ -47,44 +60,69 @@ namespace GestionStock.Migrations
             modelBuilder.Entity("GestionStock.Models.Entree", b =>
                 {
                     b.Property<string>("NumBonEntre")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DateEntree")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NomFournisseur")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("NumBonEntre");
 
                     b.ToTable("Entrees");
                 });
 
+            modelBuilder.Entity("GestionStock.Models.MonthlyRankResult", b =>
+                {
+                    b.Property<string>("Descriptions")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Designation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("IdProduit")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Img")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QuantiteStock")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalSorties")
+                        .HasColumnType("INTEGER");
+
+                    b.ToTable("MonthlyRankResults");
+                });
+
             modelBuilder.Entity("GestionStock.Models.Produit", b =>
                 {
                     b.Property<int>("IdProduit")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Descriptions")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Designation")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Img")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("QuantiteStock")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("IdProduit");
 
@@ -94,37 +132,53 @@ namespace GestionStock.Migrations
             modelBuilder.Entity("GestionStock.Models.Sortie", b =>
                 {
                     b.Property<string>("NumBonSortie")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DateSortie")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NomClient")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("NumBonSortie");
 
                     b.ToTable("Sorties");
                 });
 
+            modelBuilder.Entity("GestionStock.Models.StatisticsResult", b =>
+                {
+                    b.Property<int>("Month")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NbrEntree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NbrSortie")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("INTEGER");
+
+                    b.ToTable("StatisticsResults");
+                });
+
             modelBuilder.Entity("GestionStock.Models.Stocker", b =>
                 {
                     b.Property<int>("IdStock")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("IdProduit")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("NumBonEntre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("QuantiteEntree")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("IdStock");
 
@@ -135,23 +189,43 @@ namespace GestionStock.Migrations
                     b.ToTable("Stockers");
                 });
 
+            modelBuilder.Entity("GestionStock.Models.StockerWithDesignation", b =>
+                {
+                    b.Property<string>("Designation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("IdProduit")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IdStock")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("NumBonEntre")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("QuantiteEntree")
+                        .HasColumnType("INTEGER");
+
+                    b.ToTable("StockersWithDesignation");
+                });
+
             modelBuilder.Entity("GestionStock.Models.Destocker", b =>
                 {
-                    b.HasOne("GestionStock.Models.Produit", "Produit")
+                    b.HasOne("GestionStock.Models.Produit", "Produits")
                         .WithMany()
                         .HasForeignKey("IdProduit")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GestionStock.Models.Sortie", "Sortie")
+                    b.HasOne("GestionStock.Models.Sortie", "Sorties")
                         .WithMany("Destockers")
                         .HasForeignKey("NumBonSortie")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Produit");
+                    b.Navigation("Produits");
 
-                    b.Navigation("Sortie");
+                    b.Navigation("Sorties");
                 });
 
             modelBuilder.Entity("GestionStock.Models.Stocker", b =>
